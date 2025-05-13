@@ -1,0 +1,65 @@
+<Window x:Class="YourNamespace.Views.CustomNotification"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Уведомление" Height="150" Width="300"
+        WindowStyle="None" 
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        WindowStartupLocation="Manual">
+    
+    <Window.Resources>
+        <Storyboard x:Key="ShowAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                           From="0" To="1" Duration="0:0:0.3"/>
+            <DoubleAnimation Storyboard.TargetProperty="(Window.Top)"
+                           From="{Binding InitialTop}"
+                           To="{Binding TargetTop}"
+                           Duration="0:0:0.3">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        
+        <Storyboard x:Key="HideAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                           From="1" To="0" Duration="0:0:0.3"/>
+            <DoubleAnimation Storyboard.TargetProperty="(Window.Top)"
+                           From="{Binding TargetTop}"
+                           To="{Binding InitialTop}"
+                           Duration="0:0:0.3">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Window.Resources>
+
+    <Border Background="#FF2D2D2D" 
+            CornerRadius="10" 
+            BorderBrush="#FFE31E24" 
+            BorderThickness="1"
+            Effect="{StaticResource DropShadowEffect}">
+        <Grid Margin="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="TitleText"
+                     Text="Успешная регистрация!"
+                     FontSize="18"
+                     Foreground="#FFE31E24"
+                     FontWeight="SemiBold"
+                     Margin="0,0,0,10"/>
+
+            <TextBlock x:Name="MessageText"
+                     Grid.Row="1"
+                     Text="Ваш аккаунт успешно создан. Добро пожаловать!"
+                     Foreground="White"
+                     TextWrapping="Wrap"/>
+        </Grid>
+    </Border>
+</Window> 

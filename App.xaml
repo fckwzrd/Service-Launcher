@@ -1,0 +1,101 @@
+﻿<Application x:Class="_123123.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             StartupUri="Views/LoginWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/TextStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/Icons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Базовые стили для всего текста в приложении -->
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="{x:Type GroupBox}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="{x:Type ComboBox}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="{x:Type ListBox}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="{x:Type MenuItem}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="{x:Type ToolTip}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="{x:Type TabItem}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <!-- Базовый стиль для Run элементов -->
+            <Style TargetType="{x:Type Run}">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
