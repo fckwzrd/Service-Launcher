@@ -297,6 +297,17 @@ namespace _123123.Views
             {
                 var userService = new UserService();
                 userService.UpdateUser(_currentUser);
+
+                // Сохраняем токен Discord в конфигурации
+                if (_currentUser.IsDiscordConnected)
+                {
+                    ConfigurationService.Instance.SaveDiscordTokens(
+                        _currentUser.DiscordToken,
+                        _currentUser.DiscordRefreshToken,
+                        _currentUser.DiscordUserId
+                    );
+                }
+
                 Debug.WriteLine("User changes saved successfully");
             }
             catch (Exception ex)
@@ -506,43 +517,48 @@ namespace _123123.Views
         {
             try
             {
-                var (isOnline, status, activity, details) = await _discordService.GetUserStatus();
+                if (!_currentUser.IsDiscordConnected) return;
+
+                var status = await _discordService.GetUserStatus(_currentUser.DiscordToken);
                 
+                // Обновляем UI в основном потоке
                 Dispatcher.Invoke(() =>
                 {
-                    DiscordStatusText.Text = status;
-                    DiscordActivityText.Text = !string.IsNullOrEmpty(activity) ? activity : "Нет активности";
-                    DiscordActivityDetailsText.Text = details ?? "";
-                    DiscordLastUpdateText.Text = $"Последнее обновление: {DateTime.Now:HH:mm:ss}";
-
-                    // Обновляем цвет индикатора в зависимости от статуса
-                    var color = status switch
+                    if (status != null)
                     {
-                        "В сети" => Color.FromRgb(67, 181, 129),      // Зеленый
-                        "Не активен" => Color.FromRgb(250, 166, 26),  // Желтый
-                        "Не беспокоить" => Color.FromRgb(240, 71, 71), // Красный
-                        _ => Color.FromRgb(116, 127, 141)             // Серый для оффлайн и неизвестного статуса
-                    };
-
-                    DiscordOnlineIndicator.Fill = new SolidColorBrush(color);
-
-                    // Анимация для статуса "Не активен"
-                    if (status == "Не активен")
-                    {
-                        var animation = new DoubleAnimation
+                        DiscordStatusText.Text = status.Status;
+                        DiscordGameText.Text = status.Game ?? "Не в игре";
+                        
+                        // Добавляем дополнительную информацию о статусе
+                        if (!string.IsNullOrEmpty(status.CustomStatus))
                         {
-                            From = 1,
-                            To = 0.3,
-                            Duration = TimeSpan.FromSeconds(2),
-                            AutoReverse = true,
-                            RepeatBehavior = RepeatBehavior.Forever
-                        };
-                        DiscordOnlineIndicator.BeginAnimation(OpacityProperty, animation);
+                            DiscordCustomStatusText.Text = status.CustomStatus;
+                            DiscordCustomStatusPanel.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            DiscordCustomStatusPanel.Visibility = Visibility.Collapsed;
+                        }
+
+                        // Показываем время в игре, если доступно
+                        if (!string.IsNullOrEmpty(status.GameStartTime))
+                        {
+                            DateTime startTime = DateTime.Parse(status.GameStartTime);
+                            TimeSpan playTime = DateTime.Now - startTime;
+                            DiscordPlayTimeText.Text = $"Время в игре: {playTime.Hours}ч {playTime.Minutes}м";
+                            DiscordPlayTimePanel.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            DiscordPlayTimePanel.Visibility = Visibility.Collapsed;
+                        }
                     }
                     else
                     {
-                        DiscordOnlineIndicator.BeginAnimation(OpacityProperty, null);
-                        DiscordOnlineIndicator.Opacity = 1;
+                        DiscordStatusText.Text = "Не в сети";
+                        DiscordGameText.Text = "";
+                        DiscordCustomStatusPanel.Visibility = Visibility.Collapsed;
+                        DiscordPlayTimePanel.Visibility = Visibility.Collapsed;
                     }
                 });
             }
@@ -551,48 +567,33 @@ namespace _123123.Views
                 Debug.WriteLine($"Error updating Discord status: {ex.Message}");
                 Dispatcher.Invoke(() =>
                 {
-                    DiscordStatusText.Text = "Ошибка";
-                    DiscordActivityText.Text = "Недоступно";
-                    DiscordActivityDetailsText.Text = string.Empty;
-                    DiscordLastUpdateText.Text = $"Ошибка обновления: {DateTime.Now:HH:mm:ss}";
-                    DiscordOnlineIndicator.Fill = new SolidColorBrush(Color.FromRgb(116, 127, 141));
+                    DiscordStatusText.Text = "Ошибка обновления";
+                    // Не показываем ошибку пользователю, просто логируем
                 });
-
-                // Если токен недействителен, отключаем интеграцию
-                if (ex.Message.Contains("401") || ex.Message.Contains("403"))
-                {
-                    _currentUser.IsDiscordConnected = false;
-                    _currentUser.DiscordToken = null;
-                    _currentUser.DiscordId = null;
-                    UpdateDiscordConnectionUI(false);
-                    await SaveUserChanges();
-                    
-                    MessageBox.Show("Токен Discord истёк или был отозван. Пожалуйста, подключите Discord заново.",
-                                  "Ошибка авторизации",
-                                  MessageBoxButton.OK,
-                                  MessageBoxImage.Warning);
-                }
             }
+        }
+
+        // Добавляем метод для ручного обновления статуса
+        private void RefreshDiscordStatus_Click(object sender, RoutedEventArgs e)
+        {
+            _ = UpdateDiscordStatus();
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            _steamUpdateTimer.Stop();
-            _discordUpdateTimer?.Stop();
-            _pulseAnimation?.Stop(this);
-            _authServer.Stop();
-            
-            // Закрываем главное окно при закрытии профиля
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window is ProfileView)
-                {
-                    window.Close();
-                    break;
-                }
-            }
-            
             base.OnClosed(e);
+
+            // Останавливаем только таймер Steam
+            _steamUpdateTimer?.Stop();
+
+            // Сохраняем Discord токен перед закрытием
+            if (_currentUser.IsDiscordConnected)
+            {
+                SaveUserChanges().Wait();
+            }
+
+            // НЕ отключаем Discord при закрытии окна
+            // Оставляем _discordUpdateTimer работающим
         }
     }
 } 

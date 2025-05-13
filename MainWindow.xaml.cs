@@ -23,6 +23,7 @@ namespace _123123
     public partial class MainWindow : Window
     {
         private readonly User _currentUser;
+        private ProfileView _profileWindow;
 
         public MainWindow(User user = null)
         {
@@ -31,11 +32,19 @@ namespace _123123
 
             if (_currentUser != null)
             {
-                WelcomeText.Text = $"Добро пожаловать, {_currentUser.Username}!";
+                // Открываем окно профиля
+                _profileWindow = new ProfileView(_currentUser);
+                _profileWindow.Show();
                 
-                // Автоматически открываем окно профиля
-                var profileWindow = new ProfileView(_currentUser);
-                profileWindow.Show();
+                // Скрываем главное окно
+                this.Hide();
+                
+                // Подписываемся на закрытие окна профиля
+                _profileWindow.Closed += (s, e) => 
+                {
+                    // Показываем главное окно при закрытии профиля
+                    this.Show();
+                };
             }
         }
 
@@ -62,8 +71,17 @@ namespace _123123
                 return;
             }
 
-            var profileWindow = new ProfileView(_currentUser);
-            profileWindow.Show();
+            if (_profileWindow == null || !_profileWindow.IsVisible)
+            {
+                _profileWindow = new ProfileView(_currentUser);
+                _profileWindow.Show();
+                this.Hide();
+                
+                _profileWindow.Closed += (s, e) => 
+                {
+                    this.Show();
+                };
+            }
         }
     }
 }
