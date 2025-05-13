@@ -7,6 +7,7 @@ This project provides Discord integration functionality using Discord OAuth2 and
 - Discord OAuth2 authentication
 - User data management
 - Configuration service for managing application and user settings
+- Новая локальная функция
 
 ## Test Section
 This is a test change to demonstrate how Git works with file updates.
